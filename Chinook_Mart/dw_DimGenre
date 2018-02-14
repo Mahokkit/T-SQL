@@ -1,0 +1,12 @@
+USE Chinook
+GO
+
+SELECT 
+	g.GenreId,
+	'AllLevels' AS 'AllLevels',
+	g.[Name] AS 'Genre'
+INTO dw.DimGenre
+FROM dbo.Genre g
+
+ALTER TABLE dw.DimGenre
+	ADD CONSTRAINT pk_genreID PRIMARY KEY CLUSTERED (GenreId);
