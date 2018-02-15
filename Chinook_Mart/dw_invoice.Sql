@@ -14,7 +14,7 @@ INTO dw.Invoice
 FROM dbo.Invoice i
 INNER JOIN dw.DimBillReg br
 	ON i.BillingCity + isnull(i.BillingState, i.BillingCountry) + i.BillingCountry
-		= br.BillingCity + br.BillingState + br.BillingCountry
+		= br.billCity + br.billState + br.billCnty
 		;
 
 ALTER TABLE dw.Invoice
