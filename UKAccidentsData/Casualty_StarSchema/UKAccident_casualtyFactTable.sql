@@ -12,7 +12,7 @@ SELECT * FROM stg.RoadSafetyAccidents2016File WHERE Accident_Index = '201601MM70
 
 SELECT [Time], datepart(HH, [Time]) AS 'Hour'  FROM stg.RoadSafetyAccidents2016File;
 
-SELECT [Date], cast(convert(char(8), [Date], 112) as int) FROM stg.RoadSafetyAccidents2016File;
+SELECT DISTINCT [Date], cast(convert(char(8), [Date], 112) as int) FROM stg.RoadSafetyAccidents2016File;
 
 SELECT * FROM stg.DimDate
 
@@ -46,10 +46,10 @@ SELECT
 	m.Age_Band_of_Driver AS 'AgeBandOfDriver',
 	r.Longitude AS 'CasualtyLongitude',
 	r.Latitude AS 'CasualtyLatitude',
-	r.Number_of_Casualties AS 'CasualtyCount'
-INTO rpt.fCasualty
+	1 AS 'CasualtyCount'
+--INTO rpt.fCasualty
 FROM stg.CasFile c
-LEFT JOIN stg.RoadSafetyAccidents2016File r ON r.Accident_Index = c.Accident_Index
-LEFT JOIN stg.MakeModel2016File m ON m.Accident_Index = c.Accident_Index AND m.Vehicle_Reference = c.Vehicle_Reference;
+INNER JOIN stg.RoadSafetyAccidents2016File r ON r.Accident_Index = c.Accident_Index
+INNER JOIN stg.MakeModel2016File m ON m.Accident_Index = c.Accident_Index AND m.Vehicle_Reference = c.Vehicle_Reference;
 
 SELECT * FROM rpt.fCasualty;
