@@ -15,13 +15,13 @@ SELECT
 	r.Police_Force,
 	r.Accident_Severity,
 	r.Number_of_Vehicles,
+	r.Number_of_Casualties,
 	convert(char(8), r.[Date], 112) AS 'AccDate_st',
 	r.[Date] AS 'AccDate',
 	cast(convert(char(8), r.[Date], 112) as int) AS 'date_fk',
+	r.Day_of_Week,
 	r.[Time] AS 'AccTime',
 	datepart(HH, r.[Time]) AS 'AccHour',
-	r.Day_of_Week,
-	r.[Time],
 	r.[Local_Authority_(District)] AS 'LocAuthDistrict',
 	r.[Local_Authority_(Highway)] AS 'LocAuthHighway',
 	r.[1st_Road_Class] AS 'first_Road_Class',
@@ -45,16 +45,19 @@ SELECT
 	1 AS 'AccCount'
 FROM stg.RoadSafetyAccidents2016File r
 
-DROP TABLE rpt.fAccidents
-CREATE TABLE [rpt].[fAccidents] (
+DROP TABLE rpt.fAccidents;
+
+CREATE TABLE [rpt].[fAccidents] 
+(
     [Accident_Index] nvarchar(50),
     [Longitude] float,
     [Latitude] float,
     [Police_Force] bigint,
     [Accident_Severity] bigint,
     [Number_of_Vehicles] bigint,
+    [Number_of_Casualties] bigint,
     [AccDate_st] varchar(8),
-    [AccDate] date,
+    [AccDate] datetime,
     [date_fk] int,
     [AccTime] datetime,
     [AccHour] int,
@@ -83,4 +86,12 @@ CREATE TABLE [rpt].[fAccidents] (
     [AccCount] int
 )
 
-SELECT * FROM rpt.fAccidents
+
+
+SELECT
+	d.[MonthName], 
+	SUM(f.AccCount) AS 'AccCount', 
+	SUM(f.Number_of_Casualties) AS 'CasCount'
+FROM rpt.fAccidents f
+INNER JOIN rpt.dCalendar d ON d.DateKey = f.date_fk
+GROUP BY d.[MonthName];
